@@ -1,0 +1,35 @@
+import asyncio
+from aiogram import Bot, Dispatcher, F
+from aiogram.filters import CommandStart
+from aiogram.types import (InlineKeyboardMarkup, InlineKeyboardButton,
+                           CallbackQuery, Message)
+
+TOKEN = "9118203234:AAG5wsHdK2YhSwjNUQbu1Lu60WKtqYzgF4Q"
+
+bot = Bot(TOKEN)
+dp = Dispatcher()
+
+kb = InlineKeyboardMarkup(inline_keyboard=[
+    [InlineKeyboardButton(text="📢 so2_over", url="https://t.me/so2_over")],
+    [InlineKeyboardButton(text="📢 eblanitypiego", url="https://t.me/eblanitypiego")],
+    [InlineKeyboardButton(text="✅ Проверить подписку", callback_data="check")],
+])
+
+@dp.message(CommandStart())
+async def start(m: Message):
+    await m.answer(
+        "👋 <b>Приветствую вас!</b>\n\n"
+        "🔑 Это бот, где вы можете получить <b>ключ</b>.\n\n"
+        "👇 Подпишитесь на каналы ниже и нажмите «Проверить подписку».",
+        parse_mode="HTML", reply_markup=kb)
+
+@dp.callback_query(F.data == "check")
+async def check(c: CallbackQuery):
+    await c.answer("✅ Вы подписаны на все каналы!", show_alert=True)
+    await c.message.answer("🔑 Ключ здесь ➡️ @ZeninTrialBot")
+
+async def main():
+    await dp.start_polling(bot)
+
+if __name__ == "__main__":
+    asyncio.run(main())
